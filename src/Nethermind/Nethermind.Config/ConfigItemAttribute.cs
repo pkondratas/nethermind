@@ -18,5 +18,7 @@ namespace Nethermind.Config
         public string EnvironmentVariable { get; set; }
 
         public bool IsPortOption { get; set; }
+        public string EnvironmentVariables { get; set; }
+
     }
 }

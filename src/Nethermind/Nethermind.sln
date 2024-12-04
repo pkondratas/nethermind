@@ -226,6 +226,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nethermind.Shutter", "Nethe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nethermind.Shutter.Test", "Nethermind.Shutter.Test\Nethermind.Shutter.Test.csproj", "{CEA1C413-A96C-4339-AC1C-839B603DECC8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nethermind.Grandine", "Nethermind.Grandine\Nethermind.Grandine.csproj", "{2424D410-B956-4A55-A1D4-ACC75F63C86F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -624,6 +626,10 @@ Global
 		{CEA1C413-A96C-4339-AC1C-839B603DECC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEA1C413-A96C-4339-AC1C-839B603DECC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEA1C413-A96C-4339-AC1C-839B603DECC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2424D410-B956-4A55-A1D4-ACC75F63C86F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2424D410-B956-4A55-A1D4-ACC75F63C86F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2424D410-B956-4A55-A1D4-ACC75F63C86F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2424D410-B956-4A55-A1D4-ACC75F63C86F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

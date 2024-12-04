@@ -9,6 +9,7 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <TieredPGO>true</TieredPGO>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GarbageCollectionAdaptationMode>0</GarbageCollectionAdaptationMode>
   </PropertyGroup>
 
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nethermind.Grandine\Nethermind.Grandine.csproj" />
     <ProjectReference Include="..\Nethermind.Api\Nethermind.Api.csproj" />
     <ProjectReference Include="..\Nethermind.Consensus.AuRa\Nethermind.Consensus.AuRa.csproj" />
     <ProjectReference Include="..\Nethermind.Consensus.Clique\Nethermind.Consensus.Clique.csproj" />
