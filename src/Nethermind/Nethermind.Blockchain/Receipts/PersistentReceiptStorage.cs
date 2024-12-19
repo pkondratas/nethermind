@@ -25,7 +25,6 @@ namespace Nethermind.Blockchain.Receipts
         private readonly IColumnsDb<ReceiptsColumns> _database;
         private readonly ISpecProvider _specProvider;
         private readonly IReceiptsRecovery _receiptsRecovery;
-        private long? _lowestInsertedReceiptBlock;
         private readonly IDb _blocksDb;
         private readonly IDb _defaultColumn;
         private readonly IDb _transactionDb;
@@ -65,8 +64,6 @@ namespace Nethermind.Blockchain.Receipts
             _storageDecoder = storageDecoder ?? ReceiptArrayStorageDecoder.Instance;
             _receiptConfig = receiptConfig ?? throw new ArgumentNullException(nameof(receiptConfig));
 
-            byte[] lowestBytes = _defaultColumn.Get(Keccak.Zero);
-            _lowestInsertedReceiptBlock = lowestBytes is null ? (long?)null : new RlpStream(lowestBytes).DecodeLong();
             _migratedBlockNumber = Get(MigrationBlockNumberKey, long.MaxValue);
 
             KeyValuePair<byte[], byte[]>? firstValue = _blocksDb.GetAll().FirstOrDefault();
@@ -302,19 +299,6 @@ namespace Nethermind.Blockchain.Receipts
             }
         }
 
-        public long? LowestInsertedReceiptBlockNumber
-        {
-            get => _lowestInsertedReceiptBlock;
-            set
-            {
-                _lowestInsertedReceiptBlock = value;
-                if (value.HasValue)
-                {
-                    _defaultColumn.Set(Keccak.Zero, Rlp.Encode(value.Value).Bytes);
-                }
-            }
-        }
-
         public long MigratedBlockNumber
         {
             get => _migratedBlockNumber;
@@ -383,7 +367,7 @@ namespace Nethermind.Blockchain.Receipts
             HashSet<Hash256AsKey> newTxs = null;
             if (exceptBlock is not null)
             {
-                newTxs = new HashSet<Hash256AsKey>(exceptBlock.Transactions.Select((tx) => new Hash256AsKey(tx.Hash)));
+                newTxs = new HashSet<Hash256AsKey>(exceptBlock.Transactions.Select(static (tx) => new Hash256AsKey(tx.Hash)));
             }
 
             using IWriteBatch writeBatch = _transactionDb.StartWriteBatch();

@@ -141,7 +141,7 @@ namespace Nethermind.Evm.TransactionProcessing
             // commit - is for standard execute, we will commit thee state after execution
             // !commit - is for build up during block production, we won't commit state after each transaction to support rollbacks
             // we commit only after all block is constructed
-            bool commit = opts.HasFlag(ExecutionOptions.Commit) || !spec.IsEip658Enabled;
+            bool commit = opts.HasFlag(ExecutionOptions.Commit) || (!opts.HasFlag(ExecutionOptions.Warmup) && !spec.IsEip658Enabled);
 
             TransactionResult result;
             if (!(result = ValidateStatic(tx, header, spec, opts, out long intrinsicGas))) return result;
@@ -317,15 +317,8 @@ namespace Nethermind.Evm.TransactionProcessing
             {
                 float gasPrice = (float)((double)effectiveGasPrice / 1_000_000_000.0);
 
-                Metrics.MinGasPrice = Math.Min(gasPrice, Metrics.MinGasPrice);
-                Metrics.MaxGasPrice = Math.Max(gasPrice, Metrics.MaxGasPrice);
-
                 Metrics.BlockMinGasPrice = Math.Min(gasPrice, Metrics.BlockMinGasPrice);
                 Metrics.BlockMaxGasPrice = Math.Max(gasPrice, Metrics.BlockMaxGasPrice);
-
-                Metrics.AveGasPrice = (Metrics.AveGasPrice * Metrics.Transactions + gasPrice) / (Metrics.Transactions + 1);
-                Metrics.EstMedianGasPrice += Metrics.AveGasPrice * 0.01f * float.Sign(gasPrice - Metrics.EstMedianGasPrice);
-                Metrics.Transactions++;
 
                 Metrics.BlockAveGasPrice = (Metrics.BlockAveGasPrice * Metrics.BlockTransactions + gasPrice) / (Metrics.BlockTransactions + 1);
                 Metrics.BlockEstMedianGasPrice += Metrics.BlockAveGasPrice * 0.01f * float.Sign(gasPrice - Metrics.BlockEstMedianGasPrice);

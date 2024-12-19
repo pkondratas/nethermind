@@ -56,7 +56,7 @@ namespace Nethermind.TxPool.Test
             var codeDb = new MemDb();
             _stateProvider = new WorldState(trieStore, codeDb, _logManager);
             _blockTree = Substitute.For<IBlockTree>();
-            Block block = Build.A.Block.WithNumber(0).TestObject;
+            Block block = Build.A.Block.WithNumber(10000000 - 1).TestObject;
             _blockTree.Head.Returns(block);
             _blockTree.FindBestSuggestedHeader().Returns(Build.A.BlockHeader.WithNumber(10000000).TestObject);
 
@@ -364,7 +364,7 @@ namespace Nethermind.TxPool.Test
         [Test]
         public void should_accept_tx_when_base_fee_is_high()
         {
-            ISpecProvider specProvider = new OverridableSpecProvider(new TestSpecProvider(London.Instance), r => new OverridableReleaseSpec(r) { Eip1559TransitionBlock = 1 });
+            ISpecProvider specProvider = new OverridableSpecProvider(new TestSpecProvider(London.Instance), static r => new OverridableReleaseSpec(r) { Eip1559TransitionBlock = 1 });
             BlocksConfig blocksConfig = new()
             {
                 MinGasPrice = 1.GWei()
@@ -415,7 +415,7 @@ namespace Nethermind.TxPool.Test
             _txPool = CreatePool(new TxPoolConfig() { Size = 30 });
             Transaction[] transactions = GetTransactions(GetPeers(3), true, false);
 
-            foreach (Address address in transactions.Select(t => t.SenderAddress).Distinct())
+            foreach (Address address in transactions.Select(static t => t.SenderAddress).Distinct())
             {
                 EnsureSenderBalance(address, UInt256.MaxValue);
             }
@@ -461,7 +461,7 @@ namespace Nethermind.TxPool.Test
             _txPool = CreatePool(new TxPoolConfig() { Size = 30 }, specProvider);
             Transaction[] transactions = GetTransactions(GetPeers(3), true, false);
 
-            foreach (Address address in transactions.Select(t => t.SenderAddress).Distinct())
+            foreach (Address address in transactions.Select(static t => t.SenderAddress).Distinct())
             {
                 EnsureSenderBalance(address, UInt256.MaxValue);
             }
@@ -495,7 +495,7 @@ namespace Nethermind.TxPool.Test
             _txPool = CreatePool(new TxPoolConfig() { Size = 30 });
             Transaction[] transactions = GetTransactions(GetPeers(3), true, false);
 
-            foreach (Address address in transactions.Select(t => t.SenderAddress).Distinct())
+            foreach (Address address in transactions.Select(static t => t.SenderAddress).Distinct())
             {
                 EnsureSenderBalance(address, UInt256.MaxValue);
             }
@@ -678,8 +678,8 @@ namespace Nethermind.TxPool.Test
 
             await RaiseBlockAddedToMainAndWaitForTransactions(5);
 
-            _txPool.GetPendingTransactions().Count(t => t.GasBottleneck == 0).Should().Be(0);
-            _txPool.GetPendingTransactions().Max(t => t.GasBottleneck).Should().Be((UInt256)5);
+            _txPool.GetPendingTransactions().Count(static t => t.GasBottleneck == 0).Should().Be(0);
+            _txPool.GetPendingTransactions().Max(static t => t.GasBottleneck).Should().Be((UInt256)5);
         }
 
         [Test]
@@ -706,7 +706,7 @@ namespace Nethermind.TxPool.Test
             }
 
             await RaiseBlockAddedToMainAndWaitForTransactions(3);
-            _txPool.GetPendingTransactions().Count(t => t.GasBottleneck == 0).Should().Be(0);
+            _txPool.GetPendingTransactions().Count(static t => t.GasBottleneck == 0).Should().Be(0);
         }
 
         [Test]
@@ -756,8 +756,8 @@ namespace Nethermind.TxPool.Test
                 _txPool.SubmitTx(transactions[i], TxHandlingOptions.PersistentBroadcast);
             }
 
-            _txPool.GetPendingTransactions().Min(t => t.GasBottleneck).Should().Be((UInt256)2);
-            _txPool.GetPendingTransactions().Max(t => t.GasBottleneck).Should().Be((UInt256)2);
+            _txPool.GetPendingTransactions().Min(static t => t.GasBottleneck).Should().Be((UInt256)2);
+            _txPool.GetPendingTransactions().Max(static t => t.GasBottleneck).Should().Be((UInt256)2);
         }
 
         [Test]
@@ -785,8 +785,8 @@ namespace Nethermind.TxPool.Test
 
             await RaiseBlockAddedToMainAndWaitForTransactions(5);
             _txPool.GetPendingTransactionsCount().Should().Be(2);
-            _txPool.GetPendingTransactions().Count(t => t.GasBottleneck == 0).Should().Be(0);
-            _txPool.GetPendingTransactions().Max(t => t.GasBottleneck).Should().Be((UInt256)5);
+            _txPool.GetPendingTransactions().Count(static t => t.GasBottleneck == 0).Should().Be(0);
+            _txPool.GetPendingTransactions().Max(static t => t.GasBottleneck).Should().Be((UInt256)5);
         }
 
         [Test]
@@ -1121,6 +1121,8 @@ namespace Nethermind.TxPool.Test
             if (!eip2930Enabled)
             {
                 _blockTree.FindBestSuggestedHeader().Returns(Build.A.BlockHeader.WithNumber(MainnetSpecProvider.BerlinBlockNumber - 1).TestObject);
+                Block block = Build.A.Block.WithNumber(MainnetSpecProvider.BerlinBlockNumber - 2).TestObject;
+                _blockTree.Head.Returns(block);
             }
 
             _txPool = CreatePool(null, new TestSpecProvider(eip2930Enabled ? Berlin.Instance : Istanbul.Instance));
@@ -1132,6 +1134,26 @@ namespace Nethermind.TxPool.Test
             AcceptTxResult result = _txPool.SubmitTx(tx, TxHandlingOptions.PersistentBroadcast);
             _txPool.GetPendingTransactionsCount().Should().Be(eip2930Enabled ? 1 : 0);
             result.Should().Be(eip2930Enabled ? AcceptTxResult.Accepted : AcceptTxResult.Invalid);
+        }
+
+        [Test]
+        public void should_accept_only_when_synced([Values(false, true)] bool isSynced)
+        {
+            if (!isSynced)
+            {
+                _blockTree.FindBestSuggestedHeader().Returns(Build.A.BlockHeader.WithNumber(MainnetSpecProvider.BerlinBlockNumber - 1).TestObject);
+                Block block = Build.A.Block.WithNumber(1).TestObject;
+                _blockTree.Head.Returns(block);
+            }
+
+            _txPool = CreatePool(null, new TestSpecProvider(Berlin.Instance));
+            Transaction tx = Build.A.Transaction
+                .WithChainId(TestBlockchainIds.ChainId)
+                .SignedAndResolved(_ethereumEcdsa, TestItem.PrivateKeyA).TestObject;
+            EnsureSenderBalance(tx);
+            AcceptTxResult result = _txPool.SubmitTx(tx, TxHandlingOptions.PersistentBroadcast);
+            _txPool.GetPendingTransactionsCount().Should().Be(isSynced ? 1 : 0);
+            result.Should().Be(isSynced ? AcceptTxResult.Accepted : AcceptTxResult.Syncing);
         }
 
         [Test]
@@ -1671,7 +1693,7 @@ namespace Nethermind.TxPool.Test
 
             Transaction[] transactions = GetTransactions(GetPeers(3), true, false);
 
-            foreach (Address address in transactions.Select(t => t.SenderAddress).Distinct())
+            foreach (Address address in transactions.Select(static t => t.SenderAddress).Distinct())
             {
                 EnsureSenderBalance(address, UInt256.MaxValue);
             }
@@ -1810,7 +1832,7 @@ namespace Nethermind.TxPool.Test
         {
             var transactions = GetTransactions(GetPeers(transactionsPerPeer), sameTransactionSenderPerPeer, sameNoncePerPeer);
 
-            foreach (Address address in transactions.Select(t => t.SenderAddress).Distinct())
+            foreach (Address address in transactions.Select(static t => t.SenderAddress).Distinct())
             {
                 EnsureSenderBalance(address, UInt256.MaxValue);
             }

@@ -381,7 +381,7 @@ void ConfigureLogger(ParseResult parseResult)
         return;
     }
 
-    using NLogManager logManager = new("nethermind.log");
+    using NLogManager logManager = new();
 
     logger = logManager.GetClassLogger();
 

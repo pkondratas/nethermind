@@ -37,7 +37,7 @@ public class SnapProviderTests
     public void AddAccountRange_AccountListIsEmpty_ThrowArgumentException()
     {
         using IContainer container = new ContainerBuilder()
-            .AddModule(new TestSynchronizerModule(new SyncConfig()))
+            .AddModule(new TestSynchronizerModule(new TestSyncConfig()))
             .Build();
 
         SnapProvider snapProvider = container.Resolve<SnapProvider>();
@@ -55,7 +55,7 @@ public class SnapProviderTests
     public void AddAccountRange_ResponseHasEmptyListOfAccountsAndOneProof_ReturnsExpiredRootHash()
     {
         using IContainer container = new ContainerBuilder()
-            .AddModule(new TestSynchronizerModule(new SyncConfig()))
+            .AddModule(new TestSynchronizerModule(new TestSyncConfig()))
             .Build();
 
         SnapProvider snapProvider = container.Resolve<SnapProvider>();
@@ -80,12 +80,12 @@ public class SnapProviderTests
             (TestItem.KeccakE, TestItem.GenerateRandomAccount()),
             (TestItem.KeccakF, TestItem.GenerateRandomAccount()),
         ];
-        Array.Sort(entries, (e1, e2) => e1.Item1.CompareTo(e2.Item1));
+        Array.Sort(entries, static (e1, e2) => e1.Item1.CompareTo(e2.Item1));
 
         (SnapServer ss, Hash256 root) = BuildSnapServerFromEntries(entries);
 
         using IContainer container = new ContainerBuilder()
-            .AddModule(new TestSynchronizerModule(new SyncConfig()
+            .AddModule(new TestSynchronizerModule(new TestSyncConfig()
             {
                 SnapSyncAccountRangePartitionCount = 1
             }))
@@ -122,12 +122,12 @@ public class SnapProviderTests
             (TestItem.KeccakE, TestItem.GenerateRandomAccount().WithChangedStorageRoot(TestItem.GetRandomKeccak())),
             (TestItem.KeccakF, TestItem.GenerateRandomAccount().WithChangedStorageRoot(TestItem.GetRandomKeccak())),
         ];
-        Array.Sort(entries, (e1, e2) => e1.Item1.CompareTo(e2.Item1));
+        Array.Sort(entries, static (e1, e2) => e1.Item1.CompareTo(e2.Item1));
 
         (SnapServer ss, Hash256 root) = BuildSnapServerFromEntries(entries);
 
         using IContainer container = new ContainerBuilder()
-            .AddModule(new TestSynchronizerModule(new SyncConfig()
+            .AddModule(new TestSynchronizerModule(new TestSyncConfig()
             {
                 SnapSyncAccountRangePartitionCount = 2
             }))

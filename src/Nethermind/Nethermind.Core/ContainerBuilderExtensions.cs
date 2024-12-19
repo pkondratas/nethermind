@@ -27,7 +27,7 @@ public static class ContainerBuilderExtensions
 
         IEnumerable<PropertyInfo> properties = t
             .GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-            .Where(p => p.GetCustomAttribute<SkipServiceCollectionAttribute>() == null);
+            .Where(static p => p.GetCustomAttribute<SkipServiceCollectionAttribute>() == null);
 
         foreach (PropertyInfo propertyInfo in properties)
         {
@@ -148,6 +148,15 @@ public static class ContainerBuilderExtensions
     public static ContainerBuilder Map<TFrom, TTo>(this ContainerBuilder builder, Func<TFrom, TTo> mapper) where TFrom : notnull where TTo : notnull
     {
         builder.Register(mapper)
+            .As<TTo>()
+            .ExternallyOwned();
+
+        return builder;
+    }
+
+    public static ContainerBuilder Bind<TFrom, TTo>(this ContainerBuilder builder) where TFrom : TTo where TTo : notnull
+    {
+        builder.Register(static (it) => it.Resolve<TFrom>())
             .As<TTo>()
             .ExternallyOwned();
 
