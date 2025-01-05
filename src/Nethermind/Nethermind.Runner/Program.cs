@@ -174,7 +174,7 @@ void AddGrandineNetworkAndRpcConfig(Dictionary<string, List<string>> grandineCon
     {
         grandineConfig["--eth1-rpc-urls"].Add($"http://{jsonRpcConfig.EngineHost}:{jsonRpcConfig.EnginePort}");
     }
-    grandineConfig.TryAdd("--jwt-secret", [ $"{Directory.GetCurrentDirectory()}/{jsonRpcConfig.JwtSecretFile}" ]);
+    grandineConfig.TryAdd("--jwt-secret", [ $"{Directory.GetCurrentDirectory()}/keystore/jwt-secret" ]);
     grandineConfig.TryAdd("--checkpoint-sync-url", [ CheckPointSyncUrls.Urls[network] ]);
 }
 

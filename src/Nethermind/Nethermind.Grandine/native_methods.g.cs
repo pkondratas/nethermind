@@ -11,7 +11,7 @@ namespace Nethermind.Grandine
 {
     internal static unsafe partial class NativeMethods
     {
-        [DllImport("/home/paul/Desktop/blockchain/grandine_a/grandine/target/release/libc_grandine.so")]
+        [DllImport("libc_grandine.so", EntryPoint = "grandine_run", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         internal static extern ulong grandine_run(ulong argc, byte** argv);
     }
 }
