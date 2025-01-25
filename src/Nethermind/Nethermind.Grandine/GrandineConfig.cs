@@ -65,8 +65,8 @@ namespace Nethermind.Grandine
         public string CheckpointSyncUrl { get; set; }
 
         [GrandineCliOption(OptionName = "--force-checkpoint-sync")]
-        [NethermindCliOption(OptionName = "--Grandine.ForceCheckpointSync")]
-        public string ForceCheckpointSync { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.ForceCheckpointSync", IsFlag = true)]
+        public bool ForceCheckpointSync { get; set; }
 
         [GrandineCliOption(OptionName = "--eth1-rpc-urls")]
         [NethermindCliOption(OptionName = "--Grandine.Eth1RpcUrls")]
@@ -89,8 +89,8 @@ namespace Nethermind.Grandine
         public string ArchivalEpochInterval { get; set; }
 
         [GrandineCliOption(OptionName = "--prune-storage")]
-        [NethermindCliOption(OptionName = "--Grandine.PruneStorage")]
-        public string PruneStorage { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.PruneStorage", IsFlag = true)]
+        public bool PruneStorage { get; set; }
 
         [GrandineCliOption(OptionName = "--unfinalized-states-in-memory")]
         [NethermindCliOption(OptionName = "--Grandine.UnfinalizedStatesInMemory")]
@@ -121,12 +121,12 @@ namespace Nethermind.Grandine
         public string StateSlot { get; set; }
 
         [GrandineCliOption(OptionName = "--disable-block-verification-pool")]
-        [NethermindCliOption(OptionName = "--Grandine.DisableBlockVerificationPool")]
-        public string DisableBlockVerificationPool { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.DisableBlockVerificationPool", IsFlag = true)]
+        public bool DisableBlockVerificationPool { get; set; }
 
         [GrandineCliOption(OptionName = "--subscribe-all-subnets")]
-        [NethermindCliOption(OptionName = "--Grandine.SubscribeAllSubnets")]
-        public string SubscribeAllSubnets { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.SubscribeAllSubnets", IsFlag = true)]
+        public bool SubscribeAllSubnets { get; set; }
 
         [GrandineCliOption(OptionName = "--suggested-fee-recipient")]
         [NethermindCliOption(OptionName = "--Grandine.SuggestedFeeRecipient")]
@@ -145,12 +145,12 @@ namespace Nethermind.Grandine
         public string JwtVersion { get; set; }
 
         [GrandineCliOption(OptionName = "--back-sync")]
-        [NethermindCliOption(OptionName = "--Grandine.BackSync")]
-        public string BackSync { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.BackSync", IsFlag = true)]
+        public bool BackSync { get; set; }
 
         [GrandineCliOption(OptionName = "--metrics")]
-        [NethermindCliOption(OptionName = "--Grandine.Metrics")]
-        public string Metrics { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.Metrics", IsFlag = true)]
+        public bool Metrics { get; set; }
 
         [GrandineCliOption(OptionName = "--metrics-address")]
         [NethermindCliOption(OptionName = "--Grandine.MetricsAddress")]
@@ -165,8 +165,8 @@ namespace Nethermind.Grandine
         public string RemoteMetricsUrl { get; set; }
 
         [GrandineCliOption(OptionName = "--track-liveness")]
-        [NethermindCliOption(OptionName = "--Grandine.TrackLiveness")]
-        public string TrackLiveness { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.TrackLiveness", IsFlag = true)]
+        public bool TrackLiveness { get; set; }
 
         [GrandineCliOption(OptionName = "--max-events")]
         [NethermindCliOption(OptionName = "--Grandine.MaxEvents")]
@@ -193,12 +193,12 @@ namespace Nethermind.Grandine
         public string Libp2pPortIpv6 { get; set; }
 
         [GrandineCliOption(OptionName = "--disable-peer-scoring")]
-        [NethermindCliOption(OptionName = "--Grandine.DisablePeerScoring")]
-        public string DisablePeerScoring { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.DisablePeerScoring", IsFlag = true)]
+        public bool DisablePeerScoring { get; set; }
 
         [GrandineCliOption(OptionName = "--disable-upnp")]
-        [NethermindCliOption(OptionName = "--Grandine.DisableUpnp")]
-        public string DisableUpnp { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.DisableUpnp", IsFlag = true)]
+        public bool DisableUpnp { get; set; }
 
         [GrandineCliOption(OptionName = "--discovery-port")]
         [NethermindCliOption(OptionName = "--Grandine.DiscoveryPort")]
@@ -249,8 +249,8 @@ namespace Nethermind.Grandine
         public List<string> TrustedPeers { get; set; }
 
         [GrandineCliOption(OptionName = "--slashing-enabled")]
-        [NethermindCliOption(OptionName = "--Grandine.SlashingEnabled")]
-        public string SlashingEnabled { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.SlashingEnabled", IsFlag = true)]
+        public bool SlashingEnabled { get; set; }
 
         [GrandineCliOption(OptionName = "--slashing-history-limit")]
         [NethermindCliOption(OptionName = "--Grandine.SlashingHistoryLimit")]
@@ -269,16 +269,16 @@ namespace Nethermind.Grandine
         public string KeystorePasswordFile { get; set; }
 
         [GrandineCliOption(OptionName = "--pack-extra-attestations")]
-        [NethermindCliOption(OptionName = "--Grandine.PackExtraAttestations")]
-        public string PackExtraAttestations { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.PackExtraAttestations", IsFlag = true)]
+        public bool PackExtraAttestations { get; set; }
 
         [GrandineCliOption(OptionName = "--builder-api-url")]
         [NethermindCliOption(OptionName = "--Grandine.BuilderApiUrl")]
         public string BuilderApiUrl { get; set; }
 
         [GrandineCliOption(OptionName = "--builder-disable-checks")]
-        [NethermindCliOption(OptionName = "--Grandine.BuilderDisableChecks")]
-        public string BuilderDisableChecks { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.BuilderDisableChecks", IsFlag = true)]
+        public bool BuilderDisableChecks { get; set; }
 
         [GrandineCliOption(OptionName = "--builder-max-skipped-slots")]
         [NethermindCliOption(OptionName = "--Grandine.BuilderMaxSkippedSlots")]
@@ -293,8 +293,8 @@ namespace Nethermind.Grandine
         public List<string> Web3SignerApiUrls { get; set; }
 
         [GrandineCliOption(OptionName = "--use-validator-key-cache")]
-        [NethermindCliOption(OptionName = "--Grandine.UseValidatorKeyCache")]
-        public string UseValidatorKeyCache { get; set; }
+        [NethermindCliOption(OptionName = "--Grandine.UseValidatorKeyCache", IsFlag = true)]
+        public bool UseValidatorKeyCache { get; set; }
 
         [GrandineCliOption(OptionName = "--graffiti")]
         [NethermindCliOption(OptionName = "--Grandine.Graffiti")]

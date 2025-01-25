@@ -51,7 +51,7 @@ namespace Nethermind.Grandine
         string CheckpointSyncUrl { get; set; }
 
         [ConfigItem(Description = "Force checkpoint sync. Requires --checkpoint-sync-url")]
-        string ForceCheckpointSync { get; set; }
+        bool ForceCheckpointSync { get; set; }
 
         [ConfigItem(Description = "List of Eth1 RPC URLs")]
         List<string> Eth1RpcUrls { get; set; }
@@ -69,7 +69,7 @@ namespace Nethermind.Grandine
         string ArchivalEpochInterval { get; set; }
 
         [ConfigItem(Description = "Enable prune mode where only single checkpoint state & block are stored in the DB")]
-        string PruneStorage { get; set; }
+        bool PruneStorage { get; set; }
 
         [ConfigItem(Description = "Number of unfinalized states to keep in memory")]
         string UnfinalizedStatesInMemory { get; set; }
@@ -93,10 +93,10 @@ namespace Nethermind.Grandine
         string StateSlot { get; set; }
 
         [ConfigItem(Description = "Disable block signature verification pool")]
-        string DisableBlockVerificationPool { get; set; }
+        bool DisableBlockVerificationPool { get; set; }
 
         [ConfigItem(Description = "Subscribe to all subnets")]
-        string SubscribeAllSubnets { get; set; }
+        bool SubscribeAllSubnets { get; set; }
 
         [ConfigItem(Description = "Suggested value for the feeRecipient field of the new payload")]
         string SuggestedFeeRecipient { get; set; }
@@ -111,10 +111,10 @@ namespace Nethermind.Grandine
         string JwtVersion { get; set; }
 
         [ConfigItem(Description = "Enable syncing historical data")]
-        string BackSync { get; set; }
+        bool BackSync { get; set; }
 
         [ConfigItem(Description = "Collect Prometheus metrics")]
-        string Metrics { get; set; }
+        bool Metrics { get; set; }
 
         [ConfigItem(Description = "Metrics address for metrics endpoint")]
         string MetricsAddress { get; set; }
@@ -126,7 +126,7 @@ namespace Nethermind.Grandine
         string RemoteMetricsUrl { get; set; }
 
         [ConfigItem(Description = "Enable validator liveness tracking")]
-        string TrackLiveness { get; set; }
+        bool TrackLiveness { get; set; }
 
         [ConfigItem(Description = "Max number of events stored in a single channel for HTTP API /events api call")]
         string MaxEvents { get; set; }
@@ -147,10 +147,10 @@ namespace Nethermind.Grandine
         string Libp2pPortIpv6 { get; set; }
 
         [ConfigItem(Description = "Disable peer scoring")]
-        string DisablePeerScoring { get; set; }
+        bool DisablePeerScoring { get; set; }
 
         [ConfigItem(Description = "Disable NAT traversal via UPnP")]
-        string DisableUpnp { get; set; }
+        bool DisableUpnp { get; set; }
 
         [ConfigItem(Description = "discv5 IPv4 port")]
         string DiscoveryPort { get; set; }
@@ -189,7 +189,7 @@ namespace Nethermind.Grandine
         List<string> TrustedPeers { get; set; }
 
         [ConfigItem(Description = "Enable slasher")]
-        string SlashingEnabled { get; set; }
+        bool SlashingEnabled { get; set; }
 
         [ConfigItem(Description = "Number of epochs for slasher to search for violations")]
         string SlashingHistoryLimit { get; set; }
@@ -204,13 +204,13 @@ namespace Nethermind.Grandine
         string KeystorePasswordFile { get; set; }
 
         [ConfigItem(Description = "Pack extra singular attestations to proposed block")]
-        string PackExtraAttestations { get; set; }
+        bool PackExtraAttestations { get; set; }
 
         [ConfigItem(Description = "External block builder API URL")]
         string BuilderApiUrl { get; set; }
 
         [ConfigItem(Description = "Always use specified external block builder without checking for circuit breaker conditions")]
-        string BuilderDisableChecks { get; set; }
+        bool BuilderDisableChecks { get; set; }
 
         [ConfigItem(Description = "Max allowed consecutive missing blocks to trigger circuit breaker condition and switch to local execution engine for payload construction")]
         string BuilderMaxSkippedSlots { get; set; }
@@ -222,7 +222,7 @@ namespace Nethermind.Grandine
         List<string> Web3SignerApiUrls { get; set; }
 
         [ConfigItem(Description = "Use validator key cache for faster startup")]
-        string UseValidatorKeyCache { get; set; }
+        bool UseValidatorKeyCache { get; set; }
 
         [ConfigItem(Description = "Graffiti")]
         string Graffiti { get; set; }

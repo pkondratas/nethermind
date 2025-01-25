@@ -21,16 +21,20 @@ namespace Nethermind.Grandine
                 var options = new List<byte[]>();
                 foreach ((string key, List<string> value) in grandineConfig)
                 {
-                    if (value is List<string> values)
+                    if (value.Count == 0)
                     {
-                        options.AddRange([Encoding.UTF8.GetBytes(key), ..values.Select(o => Encoding.UTF8.GetBytes(o))]);
+                        options.Add(Encoding.UTF8.GetBytes(key));
+                    }
+                    else if (key == "--features")
+                    {
+                        var encodedKey = Encoding.UTF8.GetBytes(key);
+                        value.ForEach(o => options.AddRange([ encodedKey, Encoding.UTF8.GetBytes(o) ]));
                     }
                     else
                     {
-                        options.AddRange([Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(value.ToString())]);
+                        options.AddRange([ Encoding.UTF8.GetBytes(key), ..value.Select(o => Encoding.UTF8.GetBytes(o)) ]);
                     }
                 }
-
                 byte*[] ptrArray = new byte*[options.Count];
                 for (var i = 0; i < options.Count; ++i)
                 {
@@ -50,28 +54,51 @@ namespace Nethermind.Grandine
         public static (string[], Dictionary<string, List<string>>) ConfigureGrandine(string[] args)
         {
             var grandineConfig = new GrandineConfig();
-            var dictionary = new Dictionary<string, List<string>>();
+            var grandineArgs = new Dictionary<string, List<string>>();
             var argsList = new List<string>();
-            IEnumerable<(string, string, Type)> properties = grandineConfig.GetType().GetProperties().Select(p => (p.GetCustomAttribute<NethermindCliOptionAttribute>().OptionName, p.GetCustomAttribute<GrandineCliOptionAttribute>().OptionName, p.PropertyType));
+            IEnumerable<(string, bool, string, Type)> properties = grandineConfig
+                .GetType()
+                .GetProperties()
+                .Select(p => (
+                    p.GetCustomAttribute<NethermindCliOptionAttribute>().OptionName,
+                    p.GetCustomAttribute<NethermindCliOptionAttribute>().IsFlag, 
+                    p.GetCustomAttribute<GrandineCliOptionAttribute>().OptionName, 
+                    p.PropertyType)
+                );
 
             var i = 0;
             while (i < args.Length)
             {
-                (string nethermindCli, string grandineCli, Type type) = properties.FirstOrDefault(p => p.Item1 == args[i]);
-                if (nethermindCli is not null)
+                (string nethermindCli, bool isFlag, string grandineCli, Type type) = properties.FirstOrDefault(p => p.Item1 == args[i]);
+                
+                // patikrinti
+                if (nethermindCli == "--Grandine.Features")
                 {
-                    dictionary.Add(grandineCli, []);
+                    if (!grandineArgs.TryAdd(grandineCli, [ args[i] ]))
+                    {
+                        grandineArgs[grandineCli].Add(args[i]);
+                    }
+                    i += 1;
+                }
+                else if (nethermindCli is not null && !isFlag)
+                {
+                    grandineArgs.Add(grandineCli, []);
                     i += 1;
                     while (i < args.Length && !args[i].StartsWith("--"))
                     {
-                        dictionary[grandineCli].Add(args[i]);
+                        grandineArgs[grandineCli].Add(args[i]);
                         i += 1;
                     }
 
-                    if ((type != typeof(List<string>) && dictionary[grandineCli].Count > 1) || dictionary[grandineCli].Count == 0)
+                    if ((type != typeof(List<string>) && grandineArgs[grandineCli].Count > 1) || grandineArgs[grandineCli].Count == 0)
                     {
                         throw new Exception($"Incorrect argument count for {nethermindCli}.");
                     }
+                }
+                else if (nethermindCli is not null)
+                {
+                    grandineArgs.Add(grandineCli, []);
+                    i += 1;
                 }
                 else
                 {
@@ -80,7 +107,7 @@ namespace Nethermind.Grandine
                 }
             }
             
-            return (argsList.ToArray(), dictionary);
+            return (argsList.ToArray(), grandineArgs);
         }
     }
 }

@@ -153,6 +153,7 @@ async Task<int> ConfigureAsync(string[] args)
             AddGrandineNetworkAndRpcConfig(grandineConfig, configProvider, parseResult);
             _ = Grandine.RunGrandine(grandineConfig, cancellationToken.Token);
         }
+
         return await cli.InvokeAsync(args);
     }
     finally
@@ -171,9 +172,10 @@ void AddGrandineNetworkAndRpcConfig(Dictionary<string, List<string>> grandineCon
         ?? "mainnet";
     grandineConfig.TryAdd("--network", [ network ]);
     if (!grandineConfig.TryAdd("--eth1-rpc-urls", [ $"http://{jsonRpcConfig.EngineHost}:{jsonRpcConfig.EnginePort}" ]))
-    {
+    {   
         grandineConfig["--eth1-rpc-urls"].Add($"http://{jsonRpcConfig.EngineHost}:{jsonRpcConfig.EnginePort}");
     }
+    ;
     grandineConfig.TryAdd("--jwt-secret", [ $"{Directory.GetCurrentDirectory()}/keystore/jwt-secret" ]);
     grandineConfig.TryAdd("--checkpoint-sync-url", [ CheckPointSyncUrls.Urls[network] ]);
 }
